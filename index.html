@@ -14,7 +14,7 @@
     <script type="module" crossorigin src="/vanilla-app-template/index.js"></script>
     <link rel="modulepreload" crossorigin href="/vanilla-app-template/assets/vendor-30VqbI-A.js">
     <link rel="stylesheet" crossorigin href="/vanilla-app-template/assets/vendor-DumFYO8Z.css">
-    <link rel="stylesheet" crossorigin href="/vanilla-app-template/assets/index-CJqtLwAt.css">
+    <link rel="stylesheet" crossorigin href="/vanilla-app-template/assets/index-B8MB83ZP.css">
   </head>
 
   <body>
@@ -25,7 +25,6 @@
             class="css-input js-input"
             type="text"
             name="search-inp"
-            id="search-inp"
             autofocus
             placeholder="Search images..."
           />
@@ -34,14 +33,17 @@
       </form>
     </section>
 
-    <!-- <span class="loader visually-hidden"></span> -->
+    <span class="loader initial-loader visually-hidden"></span>
 
     <section class="section-gallery">
       <ul class="gallery"></ul>
-      <button type="button" class="load-more-btn visually-hidden">
-        Load more
-      </button>
-      <span class="loader visually-hidden"></span>
+
+      <div class="load-more-wrapper">
+        <button type="button" class="load-more-btn visually-hidden">
+          Load more
+        </button>
+        <span class="loader aditional-loader visually-hidden"></span>
+      </div>
     </section>
 
   </body>
