@@ -4,6 +4,7 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 
 let lightbox;
 
+// Ініціалізація SimpleLightbox для перегляду великих зображень у галереї
 export function initLightbox() {
     lightbox = new SimpleLightbox('.gallery a', {
     captions: true,
@@ -14,6 +15,7 @@ export function initLightbox() {
     captionPosition: 'bottom',
     });
     
+    // Обробка подій SimpleLightbox
     lightbox.on('show.simplelightbox', function () { });
     
     lightbox.on('error.simplelightbox', function (e) {
@@ -23,6 +25,7 @@ export function initLightbox() {
     return lightbox;
 }
 
+// Створення HTML-розмітки для однієї картки зображення
 export function createImageCard(image) {
     const {
         webformatURL,
@@ -59,9 +62,11 @@ export function createImageCard(image) {
         </li>`;
 }
 
+// Рендеринг повної галереї зображень у DOM-елементі 
 export function makeGallery(images, galleryElement, lightboxInstance) {
   galleryElement.innerHTML = images.map(createImageCard).join('');
 
+    // Оновлення lightbox після додавання нових зображень
   if (lightboxInstance && typeof lightboxInstance.refresh === 'function') {
     lightboxInstance.refresh();
   }

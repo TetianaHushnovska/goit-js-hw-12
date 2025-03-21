@@ -1,9 +1,13 @@
+// Імпорт бібліотеки Axios для роботи з HTTP-запитами
 import axios from "axios";
 
+// Встановлення базової URL-адреси для всіх запитів
 axios.defaults.baseURL = 'https://pixabay.com/api/';
 
+// Отримання даних із Pixabay API на основі запиту користувача
 export default async function responseData (requestWord, additionalParams ={}) {
 
+    // Формування параметрів запиту
     const requestedParams = {
         key: '49159303-69e39ecdcc21e97a7866413fa',
         q: requestWord,
@@ -20,6 +24,7 @@ export default async function responseData (requestWord, additionalParams ={}) {
         });
         return response.data;
     }
+    // Прокидування помилки для обробки в основному коді
     catch (error) {
         throw error;
     }

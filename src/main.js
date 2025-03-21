@@ -13,20 +13,22 @@ import { makeGallery, initLightbox, createImageCard } from './js/render-function
 const searchForm = document.querySelector('.form');
 const input = document.querySelector('.js-input');
 const gallery = document.querySelector('.gallery');
-const loader = document.querySelector('.loader');
+const loaderInit = document.querySelector('.initial-loader');
+const loaderAdd = document.querySelector('.aditional-loader');
 const loadMoreBtn = document.querySelector('.load-more-btn');
 const lightbox = initLightbox();
 
 let currentSearchQuery = '';
 let page = 1;
+let MAX_PAGE = 3;
 
 // Показати loader
-function showLoader() {
+function showLoader(loader) {
     loader.classList.remove('visually-hidden');
 }
 
 // Приховати loader
-function hideLoader() {
+function hideLoader(loader) {
     loader.classList.add('visually-hidden');
 }
 
@@ -69,7 +71,7 @@ searchForm.addEventListener('submit', async event => {
     const request = input.value.trim();
     if (request === "") {
         gallery.innerHTML = ""; 
-        hideLoader();
+        hideLoader(loaderInit);
         hideLoadMoreBtn();
         iziToast.warning(warning)
         return;
@@ -81,28 +83,37 @@ searchForm.addEventListener('submit', async event => {
 
     gallery.innerHTML = "";
     hideLoadMoreBtn();
-    showLoader();
+    showLoader(loaderInit);
 
     try {
         const data = await responseData(request, {page});
         const images = data.hits;
 
-        if (images.length === 0) {
+        // Затримка для показу лоадера
+        setTimeout(() => {
+            if (images.length === 0) {
             iziToast.error(errorMessage);
             hideLoadMoreBtn();
+            hideLoader(loaderInit);
             return;
-        }
-        else {
+            }
+            
             makeGallery(images, gallery, lightbox);
-            showLoadMoreBtn();
-        }
+
+
+            if (data.totalHits > images.length && page < MAX_PAGE) {
+                showLoadMoreBtn();
+            }
+
+            hideLoader(loaderInit);
+        }, 1000)
     }
     catch (error) {
         iziToast.error(errorMessage);
         console.log('Error request:', error);
+        hideLoader(loaderInit);
     }
     finally {
-        hideLoader();
         input.value = '';
     }
 });
@@ -110,38 +121,52 @@ searchForm.addEventListener('submit', async event => {
 // Завантаження додаткових зображеть
 loadMoreBtn.addEventListener('click', async () => {
     page += 1;
-    showLoader();
+
+    hideLoadMoreBtn();  
+    showLoader(loaderAdd);
 
     try {
         const data = await responseData(currentSearchQuery, {page});
         const images = data.hits;
 
-        if (images.length === 0) {
+        setTimeout(() => {
+            if (images.length === 0) {
             hideLoadMoreBtn();
-            iziToast.info({
-                message: 'No more images found.',
-                position: 'topRight',
-            });
+            iziToast.info(info);
+            hideLoader(loaderAdd);
             return;
-        }
-
+            }
+            
         // Додаємо нові зображення до галереї
         const markUp = images.map(image => createImageCard(image)).join('');
         gallery.insertAdjacentHTML('beforeend', markUp);
         lightbox.refresh();
 
+        // Плавне покручyвання
+        const { height: cardHeight } = gallery
+            .querySelector('.gallery-item')
+            .getBoundingClientRect();
+        
+        window.scrollBy({
+            top: cardHeight * 2,
+            behavior: 'smooth',
+        });
+
         // Приховуємо кнопку, якщо зображень більше немає
-        const totalLoaded = page * 3;
-        if (totalLoaded > data.totalHits) {
-            hideLoadMoreBtn();
+        const totalLoaded = gallery.querySelectorAll('.gallery-item').length;
+        if (page >= MAX_PAGE || totalLoaded >= data.totalHits) {
+            hideLoader(loaderAdd);
             iziToast.info(info);
+            return;
         }
+            showLoadMoreBtn();
+            hideLoader(loaderAdd);
+        },1000)
     }
     catch (error) {
         iziToast.error(errorMessage);
         console.log('Error loading more:', error);
-    }
-    finally {
-        hideLoader();
+        hideLoader(loaderAdd);
+        showLoadMoreBtn();
     }
 })

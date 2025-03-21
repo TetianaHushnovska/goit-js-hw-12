@@ -22,7 +22,6 @@
             class="css-input js-input"
             type="text"
             name="search-inp"
-            id="search-inp"
             autofocus
             placeholder="Search images..."
           />
@@ -31,14 +30,17 @@
       </form>
     </section>
 
-    <!-- <span class="loader visually-hidden"></span> -->
+    <span class="loader initial-loader visually-hidden"></span>
 
     <section class="section-gallery">
       <ul class="gallery"></ul>
-      <button type="button" class="load-more-btn visually-hidden">
-        Load more
-      </button>
-      <span class="loader visually-hidden"></span>
+
+      <div class="load-more-wrapper">
+        <button type="button" class="load-more-btn visually-hidden">
+          Load more
+        </button>
+        <span class="loader aditional-loader visually-hidden"></span>
+      </div>
     </section>
 
     <script type="module" src="./main.js"></script>
